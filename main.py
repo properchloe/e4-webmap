@@ -8,10 +8,7 @@ FILENAME = 'data/map1.html'
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    dir(folium)
-    help(folium.Map)
     map1 = folium.Map(location=(35.61, -82.44), zoom_start=10)
-    map1.save(FILENAME)
 
     with open("data/volcanoes.tsv", 'r') as fv:
         my_sniffer = csv.Sniffer().sniff(fv.read())
@@ -19,7 +16,20 @@ if __name__ == '__main__':
         my_reader = csv.DictReader(fv, dialect=my_sniffer)
         rows = []
         for row in my_reader:
-            rows.append(row)
-        print(rows[0])
+            if "?" not in row["Type"] and "Historical" not in row['Status'] and "Unnamed" not in row["Volcano Name"]:
+                if 'Latitude' in row.keys() and 'Longitude' in row.keys():
+                    #print(f"Name: {row['Volcano Name']}\tLatitude: {row['Latitude']}\tLongitude: {row['Longitude']}")
+                    rows.append(row)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    icon_red = folium.Icon(color='darkred')
+    fg = folium.FeatureGroup(name="My Map")
+
+    for row in rows:
+        marker = folium.Marker(location=(row['Latitude'], row['Longitude']), popup=row['Volcano Name'], icon=icon_red)
+        fg.add_child(marker)
+
+    map1.add_child(fg)
+
+    map1.save(FILENAME)
+
+    # See PyCharm help at https://www.jetbrains.com/help/pycharm/
