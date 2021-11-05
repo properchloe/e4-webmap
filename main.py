@@ -18,17 +18,13 @@ if __name__ == '__main__':
         for row in my_reader:
             if "?" not in row["Type"] and "Historical" not in row['Status'] and "Unnamed" not in row["Volcano Name"]:
                 if 'Latitude' in row.keys() and 'Longitude' in row.keys():
-                    #print(f"Name: {row['Volcano Name']}\tLatitude: {row['Latitude']}\tLongitude: {row['Longitude']}")
+                    # print(f"Name: {row['Volcano Name']}\tLatitude: {row['Latitude']}\tLongitude: {row['Longitude']}")
                     rows.append(row)
 
-    icon_red = folium.Icon(color='darkred')
-    fg = folium.FeatureGroup(name="My Map")
-
     for row in rows:
-        marker = folium.Marker(location=(row['Latitude'], row['Longitude']), popup=row['Volcano Name'], icon=icon_red)
-        fg.add_child(marker)
-
-    map1.add_child(fg)
+        # print(f"Name: {row['Volcano Name']}\tLatitude: {row['Latitude']}\tLongitude: {row['Longitude']}")
+        marker = folium.Marker(location=[row['Latitude'], row['Longitude']], popup=row['Volcano Name'], icon=folium.Icon(color='darkred'))
+        marker.add_to(map1)
 
     map1.save(FILENAME)
 
